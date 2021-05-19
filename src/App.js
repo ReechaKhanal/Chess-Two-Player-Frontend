@@ -1,8 +1,12 @@
 /* eslint-disable */ 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ChessBoard from "./ChessBoard/chessBoard";
+import { router } from 'websocket';
+
 import * as serviceWorker from './serviceWorker';
+
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import ChessBoard from "./ChessBoard/chessBoard";
 
 /*
 ReactDOM.render(
@@ -33,9 +37,9 @@ serviceWorker.unregister();
 
 const App = () => {
   return (
-    <div class = "chess">
-      <h1>Reecha's Chess Board</h1>
-    </div>
+    <Router>
+      <Route path = "/" exact component={ChessBoard}/>
+    </Router>
   );
 }
 
