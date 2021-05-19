@@ -21,9 +21,7 @@ ReactDOM.render(
     <div class = "chess">
       <h1>Reecha's Chess Board</h1>
       
-    </div>,
-    document.getElementById('root')
-
+    </div>
   );
 
 // If you want your app to work offline and load faster, you can change

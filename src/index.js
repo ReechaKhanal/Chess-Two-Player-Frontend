@@ -5,19 +5,9 @@ import App from './App';
 import ChessBoard from "./ChessBoard/chessBoard";
 import * as serviceWorker from './serviceWorker';
 
-/*
-ReactDOM.render(
-    <App />, document.getElementById('root')
-);
-*/
+import App from './App';
 
-ReactDOM.render(
-    <div class = "chess">
-      <h1>Reecha's Chess Board</h1>
-      <ChessBoard/>
-    </div>,
-    document.getElementById('root')
-  );
+ReactDOM.render(<App />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
