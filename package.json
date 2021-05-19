@@ -10,6 +10,7 @@
     "react-medium-editor": "^1.8.1",
     "react-scripts": "2.1.8",
     "reactstrap": "^8.0.0",
+    "serve": "^11.3.2",
     "websocket": "^1.0.28"
   },
   "scripts": {
@@ -19,9 +20,9 @@
     "eject": "react-scripts eject"
   },
   "devServer": {
-  	"compress": true,
+    "compress": true,
     "disableHostCheck": true
-  },     
+  },
   "eslintConfig": {
     "extends": "react-app"
   },
