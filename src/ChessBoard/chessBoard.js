@@ -17,9 +17,8 @@ import Identicon from 'react-identicons';
 //const client = new W3CWebSocket('chess-two-player.herokuapp.com');
 
 //const W3CWebSocket = require('websocket').w3cwebsocket;
-//const client = new W3CWebSocket('https://chess-two-player.herokuapp.com');
-
-const client = new W3CWebSocket('wss://chess-two-app-frontend.herokuapp.com/');
+const client = new W3CWebSocket('wss://chess-two-player-backend.herokuapp.com/');
+//const client = new W3CWebSocket('wss://chess-two-app-frontend.herokuapp.com/');
 
 class ChessBoard extends Component{
     /*
