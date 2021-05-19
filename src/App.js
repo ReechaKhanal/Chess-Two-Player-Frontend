@@ -11,11 +11,19 @@ ReactDOM.render(
 */
 
 ReactDOM.render(
+  /*
     <div class = "chess">
       <h1>Reecha's Chess Board</h1>
       <ChessBoard/>
     </div>,
     document.getElementById('root')
+  */
+    <div class = "chess">
+      <h1>Reecha's Chess Board</h1>
+      
+    </div>,
+    document.getElementById('root')
+
   );
 
 // If you want your app to work offline and load faster, you can change
