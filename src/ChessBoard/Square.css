@@ -1,0 +1,10 @@
+.SquareBox{
+    height: 80px;
+    width: 80px;
+}
+.image{
+    position: relative;
+    height: 60px;
+    width:60px;
+    flex:1;
+}

@@ -1,0 +1,39 @@
+.chess {
+    text-align: center;
+  }
+
+.test{
+    display: flex;
+}
+
+.card {
+  position: relative;
+  height: 500px;
+  width: 25%;
+  background-color:rgb(225, 244, 250);
+  border: solid;
+  margin: auto;
+}
+
+.playerText {
+  margin-top: 0px;
+  background-color:dimgray;
+  color: azure;
+}
+
+.pieceTaken{
+  position: relative;
+  width: 90%;
+  height: 50%;
+  margin: auto;
+}
+
+.takenText{
+  position: relative;
+}
+
+.takenPiecePic{
+  position: relative;
+  width: 30px;
+  height: 30px;
+}
