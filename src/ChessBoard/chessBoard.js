@@ -12,19 +12,14 @@ import { getAllLegalMoves } from "./legalMoves/getLegalMoves";
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import Identicon from 'react-identicons';
 
-
-//const client = new W3CWebSocket('ws://127.0.0.1:8000');
-//const client = new W3CWebSocket('chess-two-player.herokuapp.com');
-
-//const W3CWebSocket = require('websocket').w3cwebsocket;
+//const client = new W3CWebSocket('wss://127.0.0.1:8000');
 const client = new W3CWebSocket('wss://chess-two-player-backend.herokuapp.com/');
-//const client = new W3CWebSocket('wss://chess-two-app-frontend.herokuapp.com/');
 
 class ChessBoard extends Component{
     /*
     * Whenever user logs in - we will take him/her to a completely new game
     * We will create a room for her and "text" reecha that someone is waiting to for you in the room. 
-    */
+    */S
     /* Log In User */
     logInUser = () => {       
         
@@ -115,22 +110,33 @@ class ChessBoard extends Component{
     } // end function componentWillMount
 
     showLoginSection = () => (
-        <div className="account">
-          <div className="account__wrapper">
-            <div className="account__card">
-              <div className="account__profile">
-                <Identicon className="account__avatar" size={64} string="randomness" />
-                <br/>
-                <p className="account__name"> Enter a new or existing room name: </p>
-                <input name="username" ref={(input) => { this.username = input; }} className="form-control" />
-                <p className="account__name">Player Name:</p>
-                <input name="playername" ref={(input1) => { this.playername = input1; }} className="form-control" /> 
-              </div>
-              <button type="button" onClick={() => this.logInUser()} className="btn btn-primary account__btn">Play Chess</button>
+        <div className="login_section">
+            <h2 className="login_head"> Welcome to Reecha's Chess Board</h2>
+            <form class="form-inline" action="/action_page.php">
+                <label for="room_name">Room Name:</label>
+                <input name="username" placeholder="Create or Join a Room" ref={(input) => { this.username = input; }} className="form-control" />
+            </form>
+            <form class="form-inline" action="/action_page.php">
+                <label for="playername">Player Name:</label>
+                <input name="playername" placeholder="Enter Your Name" ref={(input1) => { this.playername = input1; }} className="form-control" /> 
+            </form>
+            <div className="play_chess_button_div">
+                <button type="button" onClick={() => this.logInUser()} className="play_chess_button">Play Chess</button>
             </div>
-          </div>
         </div>
     )
+
+    /*<div className="account__wrapper">
+            <div className="account__card">
+              <div className="account__profile">
+                <p className="account__name"> Enter a new or existing room name: </p>
+                <input name="username" ref={(input) => { this.username = input; }} className="form-control" />
+                <p className="account__name">Your Name:</p>
+                <input name="playername" ref={(input1) => { this.playername = input1; }} className="form-control" /> 
+              </div>
+            </div>
+        </div>
+    */
 
     /* We will see if we need a showBoardSection later in here. For now we are assuming we can fit it in the render function*/
 
