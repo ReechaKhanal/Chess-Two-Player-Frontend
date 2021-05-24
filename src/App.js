@@ -10,11 +10,6 @@ import ChessBoard from "./ChessBoard/chessBoard";
 
 /*
 ReactDOM.render(
-    <App />, document.getElementById('root')
-);
-*/
-/*
-ReactDOM.render(
   
     <div class = "chess">
       <h1>Reecha's Chess Board</h1>
@@ -36,7 +31,7 @@ serviceWorker.unregister();
 */
 
 const App = () => {
-  return (
+  return (    
     <Router>
       <Route path = "/" exact component={ChessBoard}/>
     </Router>

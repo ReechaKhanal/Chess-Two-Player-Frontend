@@ -12,24 +12,23 @@ import { getAllLegalMoves } from "./legalMoves/getLegalMoves";
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import Identicon from 'react-identicons';
 
-//const client = new W3CWebSocket('wss://127.0.0.1:8000');
+//const client = new W3CWebSocket('ws://127.0.0.1:8000');
 const client = new W3CWebSocket('wss://chess-two-player-backend.herokuapp.com/');
 
 class ChessBoard extends Component{
     /*
     * Whenever user logs in - we will take him/her to a completely new game
     * We will create a room for her and "text" reecha that someone is waiting to for you in the room. 
-    */S
+    */
     /* Log In User */
-    logInUser = () => {       
+    logInUser = () => {
         
-        const username = this.username.value;
+        const roomname = this.roomname.value;
         const playername = this.playername.value;
-
-        if ((username.trim()) && (playername.trim())){
+        if ((roomname.trim()) && (roomname.trim())){
             const data = {
-              username,
-              playername
+                roomname,
+                playername
             };
             this.setState({
               ...data
@@ -49,7 +48,7 @@ class ChessBoard extends Component{
             type: "contentchange",
             currentUsers: this.state.currentUsers,
             userActivity: this.state.userActivity,
-            username: this.state.username,
+            roomname: this.state.roomname,
             playername: this.playername,
             stateBoard: this.state.stateBoard,
             selectedPiece: this.state.selectedPiece,
@@ -73,11 +72,11 @@ class ChessBoard extends Component{
             const stateToChange = {};
             
             if (dataFromServer.data === "e"){
-                stateToChange.username = null;
+                stateToChange.roomname = null;
             }else{
                 // This is probably the place where we get the state from the server back
-                if (dataFromServer.type === "userevent"){
-                    stateToChange.currentUsers = Object.values(dataFromServer.data.users)
+                if (dataFromServer.type === "userevent"){            
+                    stateToChange.currentUsers = Object.values(dataFromServer.data.users);
                     stateToChange.userActivity = dataFromServer.data.userActivity;
                     stateToChange.myColor = this.state.myColor;
 
@@ -89,7 +88,7 @@ class ChessBoard extends Component{
                 } else if (dataFromServer.type === "contentchange") {
                     stateToChange.currentUsers = dataFromServer.data.boardState.currentUsers;
                     stateToChange.userActivity = dataFromServer.data.boardState.userActivity;
-                    stateToChange.username = dataFromServer.data.boardState.username;
+                    stateToChange.roomname = dataFromServer.data.boardState.roomname;
                     stateToChange.playername = dataFromServer.data.boardState.playername;
                     stateToChange.stateBoard = dataFromServer.data.boardState.stateBoard;
                     stateToChange.selectedPiece = dataFromServer.data.boardState.selectedPiece;
@@ -112,11 +111,11 @@ class ChessBoard extends Component{
     showLoginSection = () => (
         <div className="login_section">
             <h2 className="login_head"> Welcome to Reecha's Chess Board</h2>
-            <form class="form-inline" action="/action_page.php">
+            <form class="form-inline">
                 <label for="room_name">Room Name:</label>
-                <input name="username" placeholder="Create or Join a Room" ref={(input) => { this.username = input; }} className="form-control" />
+                <input name="roomname" placeholder="Create or Join a Room" ref={(input) => { this.roomname = input; }} className="form-control" />
             </form>
-            <form class="form-inline" action="/action_page.php">
+            <form class="form-inline">
                 <label for="playername">Player Name:</label>
                 <input name="playername" placeholder="Enter Your Name" ref={(input1) => { this.playername = input1; }} className="form-control" /> 
             </form>
@@ -126,20 +125,7 @@ class ChessBoard extends Component{
         </div>
     )
 
-    /*<div className="account__wrapper">
-            <div className="account__card">
-              <div className="account__profile">
-                <p className="account__name"> Enter a new or existing room name: </p>
-                <input name="username" ref={(input) => { this.username = input; }} className="form-control" />
-                <p className="account__name">Your Name:</p>
-                <input name="playername" ref={(input1) => { this.playername = input1; }} className="form-control" /> 
-              </div>
-            </div>
-        </div>
-    */
-
     /* We will see if we need a showBoardSection later in here. For now we are assuming we can fit it in the render function*/
-
     /*
         Here we define all the state variables we need to maintain a proper flow in the game
             1. 'stateboard' is the initial setup of the board
@@ -157,7 +143,7 @@ class ChessBoard extends Component{
         this.state = {
             currentUsers: [],
             userActivity: [],
-            username: null,
+            roomname: null,
             playername: null,
             stateBoard: getInitialBoard(),
             selectedPiece: [], turn: true,
@@ -454,7 +440,7 @@ class ChessBoard extends Component{
     }
 
     render(){
-        // alert("I am " +  this.state.playername + " and I am in room "+ this.state.username);
+        // alert("I am " +  this.state.playername + " and I am in room "+ this.state.roomname);
         var stateBoard1 = this.state.stateBoard.slice();
         var takenBlackPieces = this.state.takenBlackPieces, takenWhitePieces = this.state.takenWhitePieces;
         var win = this.state.win, check = this.state.check;
@@ -469,7 +455,7 @@ class ChessBoard extends Component{
 
         return(
             <React.Fragment>
-                {this.state.username ? <>
+                {this.state.roomname ? <>
                 <div className = "test">
                     <div className = "card">
                         <h2 className = "playerText"> Player 1 : White Pieces </h2>
