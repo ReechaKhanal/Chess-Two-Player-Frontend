@@ -12,8 +12,8 @@ import { getAllLegalMoves } from "./legalMoves/getLegalMoves";
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import Identicon from 'react-identicons';
 
-//const client = new W3CWebSocket('ws://127.0.0.1:8000');
-const client = new W3CWebSocket('wss://chess-two-player-backend.herokuapp.com/');
+const client = new W3CWebSocket('ws://127.0.0.1:8000');
+//const client = new W3CWebSocket('wss://chess-two-player-backend.herokuapp.com/');
 
 class ChessBoard extends Component{
     /*
@@ -22,10 +22,9 @@ class ChessBoard extends Component{
     */
     /* Log In User */
     logInUser = () => {
-        
         const roomname = this.roomname.value;
         const playername = this.playername.value;
-        if ((roomname.trim()) && (roomname.trim())){
+        if ( ((roomname.trim()) && (roomname.trim())) && ((playername.trim()) && (playername.trim())) ){
             const data = {
                 roomname,
                 playername
@@ -109,18 +108,20 @@ class ChessBoard extends Component{
     } // end function componentWillMount
 
     showLoginSection = () => (
-        <div className="login_section">
-            <h2 className="login_head"> Welcome to Reecha's Chess Board</h2>
-            <form class="form-inline">
-                <label for="room_name">Room Name:</label>
-                <input name="roomname" placeholder="Create or Join a Room" ref={(input) => { this.roomname = input; }} className="form-control" />
-            </form>
-            <form class="form-inline">
-                <label for="playername">Player Name:</label>
-                <input name="playername" placeholder="Enter Your Name" ref={(input1) => { this.playername = input1; }} className="form-control" /> 
-            </form>
-            <div className="play_chess_button_div">
-                <button type="button" onClick={() => this.logInUser()} className="play_chess_button">Play Chess</button>
+        <div className="absoluteLoginTop">
+            <div className="login_section">
+                <h2 className="login_head"> Welcome to Reecha's Chess Board</h2>
+                <form class="form-inline">
+                    <label for="room_name">Room Name:</label>
+                    <input name="roomname" placeholder="Create or Join a Room" ref={(input) => { this.roomname = input; }} className="form-control" />
+                </form>
+                <form class="form-inline">
+                    <label for="playername">Player Name:</label>
+                    <input name="playername" placeholder="Enter Your Name" ref={(input1) => { this.playername = input1; }} className="form-control" /> 
+                </form>
+                <div className="play_chess_button_div">
+                    <button type="button" onClick={() => this.logInUser()} className="play_chess_button">Play Chess</button>
+                </div>
             </div>
         </div>
     )
@@ -455,50 +456,55 @@ class ChessBoard extends Component{
 
         return(
             <React.Fragment>
-                {this.state.roomname ? <>
-                <div className = "test">
-                    <div className = "card">
-                        <h2 className = "playerText"> Player 1 : White Pieces </h2>
-                        {this.getTurnText()}
-                        <div className = "pieceTaken">
-                            <h3 className = "takenText"> Pieces Taken </h3>
-                            {takenWhite}
+                {this.state.roomname ? <div className = "absolutueTop">
+                    <h1 className = "chess_board_heading">Reecha's Chess Board </h1>
+                    <div className = "test">
+                        <div className = "card">
+                            <h3 className = "playerText"> Player 1 : White Pieces </h3>
+                            {this.getTurnText()}
+                            <div className = "pieceTaken">
+                                <h3 className = "takenText"> Pieces Taken </h3>
+                                {takenWhite}
+                            </div>
+                            { (win > 0) && <Popup
+                                content={<>
+                                <h2>Player 1 Wins. </h2>
+                                <button onClick={() => window.location.reload()}>Start Over </button>
+                                </>}
+                            />}
                         </div>
-                        { (win > 0) && <Popup
-                            content={<>
-                            <h2>Player 1 Wins. </h2>
-                            <button onClick={() => window.location.reload()}>Start Over </button>
-                            </>}
-                        />}
-                    </div>
-                    <div>
-                        {stateBoard1.map((rows, index) => {
-                            return(
-                                <div>
-                                {rows.map((value, vIndex) => {
-                                    return <>{this.renderSquare(value[0], value[1], value[2], value[3])}</>
-                                })}
-                                </div>
-                            );
-                        })}
-                        <br></br>
-                    </div>
-                    <div className = "card">
-                        <h2 className = "playerText"> Player 2 : Black Pieces </h2>
-                        {this.getTurnText()}
-                        <div className = "pieceTaken">
-                            <h3 className = "takenText"> Pieces Taken </h3>
-                            {takenBlack}
+                        <div className="board-test1">
+                            {stateBoard1.map((rows, index) => {
+                                return(
+                                    <div>
+                                    {rows.map((value, vIndex) => {
+                                        return <>{this.renderSquare(value[0], value[1], value[2], value[3])}</>
+                                    })}
+                                    </div>
+                                );
+                            })}
+                            <br></br>
                         </div>
-                        { (win < 0) && <Popup
-                            content={<>
-                            <h2>Player 2 Wins. </h2>
-                            <button onClick={() => window.location.reload()}>Start Over </button>
-                            </>}
-                        />}
+                        <div className = "card">
+                            <h3 className = "playerText"> Player 2 : Black Pieces </h3>
+                            {this.getTurnText()}
+                            <div className = "pieceTaken">
+                                <h3 className = "takenText"> Pieces Taken </h3>
+                                {takenBlack}
+                            </div>
+                            { (win < 0) && <Popup
+                                content={<>
+                                <h2>Player 2 Wins. </h2>
+                                <button onClick={() => window.location.reload()}>Start Over </button>
+                                </>}
+                            />}
+                        </div>
                     </div>
-                </div>
-                </> : this.showLoginSection()}
+                    <div className="userActivityBox">
+                            <h1>History</h1>
+                            {this.userActivity}
+                    </div>
+                    </div> : this.showLoginSection()}
             </React.Fragment>
         );
     }
