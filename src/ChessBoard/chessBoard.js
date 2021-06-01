@@ -12,8 +12,8 @@ import { getAllLegalMoves } from "./legalMoves/getLegalMoves";
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import Identicon from 'react-identicons';
 
-const client = new W3CWebSocket('ws://127.0.0.1:8000');
-//const client = new W3CWebSocket('wss://chess-two-player-backend.herokuapp.com/');
+//const client = new W3CWebSocket('ws://127.0.0.1:8000');
+const client = new W3CWebSocket('wss://chess-two-player-backend.herokuapp.com/');
 
 class ChessBoard extends Component{
     /*
@@ -445,7 +445,7 @@ class ChessBoard extends Component{
         var stateBoard1 = this.state.stateBoard.slice();
         var takenBlackPieces = this.state.takenBlackPieces, takenWhitePieces = this.state.takenWhitePieces;
         var win = this.state.win, check = this.state.check;
-
+        var userActivity = this.state.userActivity;
         var takenBlack = takenBlackPieces.map((piece, idx) => {
             return <><img className = "takenPiecePic" alt="" src = {getImageType(piece)}/></> 
         });
@@ -501,8 +501,9 @@ class ChessBoard extends Component{
                         </div>
                     </div>
                     <div className="userActivityBox">
-                            <h1>History</h1>
-                            {this.userActivity}
+                            <h1>Chess Room History</h1>
+                            {userActivity.map((item)=><p>{item}</p>
+                            )} 
                     </div>
                     </div> : this.showLoginSection()}
             </React.Fragment>

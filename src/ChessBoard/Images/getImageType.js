@@ -11,7 +11,6 @@ import blackQueen from './black_queen.png';
 import king from './king.png';
 import blackKing from './black_king.png';
 import empty from './empty.svg';
-import empty1 from './download.jpg';
 
 export function getImageType(value){
     var dict = {
