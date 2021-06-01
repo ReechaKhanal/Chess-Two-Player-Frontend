@@ -501,7 +501,7 @@ class ChessBoard extends Component{
                         </div>
                     </div>
                     <div className="userActivityBox">
-                            <h1>Chess Room History</h1>
+                            <h4>Chess Room History</h4>
                             {userActivity.map((item)=><p>{item}</p>
                             )} 
                     </div>
