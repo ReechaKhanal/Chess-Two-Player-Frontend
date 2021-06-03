@@ -5,6 +5,7 @@ import { getKingRowCol } from "./lookForCheck.js";
 
 export function noPreSelection(selectedPiece, tempStateBoard, piece, row, col){
     // store current piece info for next time
+    
     selectedPiece = [[piece, row, col]]
     var brown = "#964B00";
     // if the selected square has a piece in it, highlight the available moves
@@ -17,13 +18,14 @@ export function noPreSelection(selectedPiece, tempStateBoard, piece, row, col){
 
     var legalMoves = getLegalMoves(board, [row+1, col+1], color);
     selectedPiece.push(legalMoves);
-    
     // highlight legalMoves
     for (var k = 0; k<legalMoves.length; k++){
         var r = legalMoves[k][0] - 1;
         var c = legalMoves[k][1] - 1;
-        tempStateBoard[r][c] = [tempStateBoard[r][c][0], brown, tempStateBoard[r][c][2], tempStateBoard[r][c][3]];
+
+        tempStateBoard[r][c] = [tempStateBoard[r][c][0], brown, tempStateBoard[r][c][2], tempStateBoard[r][c][3]];   
     }
+
     return [tempStateBoard, selectedPiece]
 }
 
@@ -99,7 +101,7 @@ export function withPreSelection(selectedPiece, tempStateBoard, piece, row, col,
                 takenPiece = piece
             }
             if (inCheck){
-                alert('I am in check')
+                //alert('I am in check')
                 // check if I am still in check
                 var stillInCheck = amIInCheck(tempStateBoard, selectedPiece[0][0]);
                 if (stillInCheck){
@@ -110,7 +112,7 @@ export function withPreSelection(selectedPiece, tempStateBoard, piece, row, col,
             // will I be in check after making this move:
             var willBeInCheck = amIInCheck(tempStateBoard, selectedPiece[0][0]);
             if (willBeInCheck){
-                alert('I will be in a check if I move this')
+                //alert('This move will cause you to be in check')
                 return [originalBoard, turn, null, check, whiteHasMoved, blackHasMoved]
             }
 

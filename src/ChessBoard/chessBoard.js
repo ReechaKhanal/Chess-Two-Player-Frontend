@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import './chessBoard.css';
 import ChessSquare from "./Square";
-import { getOriginalBoardColor, getInitialBoard } from "./getOriginalBoardProperties";
+import { getOriginalBoardColor, getInitialBoard, invertStateBoard } from "./getOriginalBoardProperties";
 import { noPreSelection, withPreSelection, amIInCheck, canOpponentGetOutOfCheck } from "./moveSimulation.js";
 import Popup from  "./popup";
 import { getImageType } from "./Images/getImageType.js"
@@ -10,16 +10,12 @@ import { getKingRowCol } from "./lookForCheck";
 import { getBoardFromStateBoard } from "./getStateBoard";
 import { getAllLegalMoves } from "./legalMoves/getLegalMoves";
 import { w3cwebsocket as W3CWebSocket } from "websocket";
-import Identicon from 'react-identicons';
 
 //const client = new W3CWebSocket('ws://127.0.0.1:8000');
 const client = new W3CWebSocket('wss://chess-two-player-backend.herokuapp.com/');
 
 class ChessBoard extends Component{
-    /*
-    * Whenever user logs in - we will take him/her to a completely new game
-    * We will create a room for her and "text" reecha that someone is waiting to for you in the room. 
-    */
+    
     /* Log In User */
     logInUser = () => {
         const roomname = this.roomname.value;
@@ -42,13 +38,16 @@ class ChessBoard extends Component{
 
     /* When content of the board changes, we send the current content of the editor to the server. */
     onBoardStateChange = (text) => {
-       
+    
+        /* Code cleaning idea: */
+        // const {currentUsers, userActivity, roomname, playername} = this.state;
+
         client.send(JSON.stringify({
             type: "contentchange",
             currentUsers: this.state.currentUsers,
             userActivity: this.state.userActivity,
             roomname: this.state.roomname,
-            playername: this.playername,
+            playername: this.state.playername,
             stateBoard: this.state.stateBoard,
             selectedPiece: this.state.selectedPiece,
             turn: this.state.turn,
@@ -57,7 +56,8 @@ class ChessBoard extends Component{
             win: this.state.win,
             check: this.state.check,
             whiteHasMoved: this.state.whiteHasMoved,
-            blackHasMoved: this.state.blackHasMoved
+            blackHasMoved: this.state.blackHasMoved,
+            inverted: this.state.inverted
         }));
     };
 
@@ -85,11 +85,11 @@ class ChessBoard extends Component{
                     }
 
                 } else if (dataFromServer.type === "contentchange") {
+                    
                     stateToChange.currentUsers = dataFromServer.data.boardState.currentUsers;
                     stateToChange.userActivity = dataFromServer.data.boardState.userActivity;
                     stateToChange.roomname = dataFromServer.data.boardState.roomname;
                     stateToChange.playername = dataFromServer.data.boardState.playername;
-                    stateToChange.stateBoard = dataFromServer.data.boardState.stateBoard;
                     stateToChange.selectedPiece = dataFromServer.data.boardState.selectedPiece;
                     stateToChange.turn = dataFromServer.data.boardState.turn;
                     stateToChange.takenWhitePieces = dataFromServer.data.boardState.takenWhitePieces;
@@ -98,6 +98,20 @@ class ChessBoard extends Component{
                     stateToChange.check = dataFromServer.data.boardState.check;
                     stateToChange.whiteHasMoved = dataFromServer.data.boardState.whiteHasMoved;
                     stateToChange.blackHasMoved = dataFromServer.data.boardState.blackHasMoved;
+                    stateToChange.inverted = dataFromServer.data.boardState.inverted;
+
+                    stateToChange.stateBoard = dataFromServer.data.boardState.stateBoard;
+                    let stateBoard1 = dataFromServer.data.boardState.stateBoard;
+
+                    //alert([stateToChange.inverted, this.state.myColor]);
+                    if ((stateToChange.inverted === true) && (this.state.myColor === "black")){
+                        stateToChange.stateBoard = invertStateBoard(stateBoard1);
+                        stateToChange.inverted = false;
+                    }
+                    else if ((stateToChange.inverted === false) && (this.state.myColor === "white")){
+                        stateToChange.stateBoard = invertStateBoard(stateBoard1);
+                        stateToChange.inverted = true;
+                    }
                 }
             }
             //stateToChange.userActivity = dataFromServer.data.userActivity;
@@ -151,7 +165,8 @@ class ChessBoard extends Component{
             takenBlackPieces: [], takenWhitePieces: [],
             win: null, check: null,
             whiteHasMoved: [false, false, false], blackHasMoved: [false, false, false],
-            myColor: null
+            myColor: null,
+            inverted: false,
         };
     }
 
@@ -279,19 +294,17 @@ class ChessBoard extends Component{
         * This is a very important function
     */
     handleClick(piece, row, col){
-
         // If the game has not been WON yet - we look further into the game
         // Else If the game has already been WON - we dont do anything - disabling any sort of movements in the chess board
         // If it is not current player's turn we dont allow them to move at all
-        if ((this.state.win == null) && ( ((this.state.myColor === "black") && this.state.turn === false) || ((this.state.myColor === "white") && (this.state.turn === true))) ){
+        if ((this.state.win == null) && ((this.state.currentUsers).length > 1) && ( ((this.state.myColor === "black") && this.state.turn === false) || ((this.state.myColor === "white") && (this.state.turn === true))) ){
 
             var selectedPiece = this.state.selectedPiece.slice();
             var tempStateBoard = this.state.stateBoard.slice();
             var turn = this.state.turn;
-            
+
             // No Preselection - If the selectedPiece state variable is empty - OR no piece has been clicked on before
             if (selectedPiece.length === 0){
-                
                 // Move further Only If the piece trying to move is the piece that is supposed to move
                 if ( ((turn === true) && (piece>0)) || ((turn === false) && (piece<0))){
                     var output = noPreSelection(selectedPiece, tempStateBoard, piece, row, col);
@@ -426,10 +439,15 @@ class ChessBoard extends Component{
 
     getTurnText(){
         var turn = this.state.turn;
-        var turnText = "White's Turn";
-        if (turn === false){
-            turnText = "Black's Turn";
+        var turnText = "";
+        var myColor = this.state.myColor;
+
+        if ( ((turn === true) && (myColor === "white")) || ( (turn===false) && (myColor === "black") )){
+            turnText = "Your Turn"
+        }else{
+            turnText = "Opponent's Turn"
         }
+        
         return turnText
     }
 
@@ -442,10 +460,18 @@ class ChessBoard extends Component{
 
     render(){
         // alert("I am " +  this.state.playername + " and I am in room "+ this.state.roomname);
-        var stateBoard1 = this.state.stateBoard.slice();
+        let stateBoard1 = [...this.state.stateBoard];
+        var myColor = this.state.myColor;
+        
+        if ((myColor == "white") && (this.state.inverted == false)){
+            stateBoard1 = invertStateBoard(stateBoard1);
+            this.setState({stateBoard: stateBoard1, inverted:true});
+        }
+        
         var takenBlackPieces = this.state.takenBlackPieces, takenWhitePieces = this.state.takenWhitePieces;
         var win = this.state.win, check = this.state.check;
         var userActivity = this.state.userActivity;
+
         var takenBlack = takenBlackPieces.map((piece, idx) => {
             return <><img className = "takenPiecePic" alt="" src = {getImageType(piece)}/></> 
         });
@@ -501,6 +527,18 @@ class ChessBoard extends Component{
                         </div>
                     </div>
                     <div className="userActivityBox">
+                            { (win < 0) && <Popup
+                                content={<>
+                                <h2>Player 2 Wins. </h2>
+                                <button onClick={() => window.location.reload()}>Start Over </button>
+                                </>}
+                            />}
+                            { (win > 0) && <Popup
+                                content={<>
+                                <h2>Player 1 Wins. </h2>
+                                <button onClick={() => window.location.reload()}>Start Over </button>
+                                </>}
+                            />}
                             <h4>Chess Room History</h4>
                             {userActivity.map((item)=><p>{item}</p>
                             )} 

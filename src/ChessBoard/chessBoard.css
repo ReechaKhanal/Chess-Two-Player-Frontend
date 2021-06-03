@@ -33,8 +33,14 @@
 
 .userActivityBox{
   position: relative;
-  width: 25%;
-  float: left;
+  margin: auto;
+  width: 45%;
+  text-align: center;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 1px 1px rgb(0 0 0 / 55%);
+  background-color: rgb(225, 244, 250);
+  border: 2px solid black;
 }
 
 .playerText {
@@ -150,8 +156,7 @@
     align-items: stretch;
   }
   .board-test1{
-    width: 90%;
-    padding-left: 25px;
+    width: 100%;
     align-items: center;
     margin: auto;
   }

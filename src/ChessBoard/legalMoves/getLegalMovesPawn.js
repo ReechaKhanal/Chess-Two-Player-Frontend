@@ -9,7 +9,34 @@ export function getLegalMovesPawn(board, currentPosition, pieceColor){
 
     // output array that holds all possible moves for a pawn
     var legalMoves = [];
-    
+    if((piece === 1) || (piece === -1)){
+        var increment = 0;
+        var increment = -1;
+        if ((row === 7) && (board[row-1][col] === 0 )&& (board[row-2][col] === 0)){
+            legalMoves.push([row-2, col]);
+        }
+        if(board[row-1][col] === 0){
+            legalMoves.push([row-1, col]);
+        }
+
+        var currentColor  = "black";
+        if (board[row+increment][col+increment] > 0){
+            currentColor = "white";
+        }
+
+        if((board[row+increment][col+increment] !== 0) && (board[row+increment][col+increment] !== null) && (currentColor !== pieceColor)){
+            legalMoves.push([row+increment, col+increment]);
+        }
+        
+        currentColor  = "black";
+        if (board[row+increment][col-increment] > 0){
+            currentColor = "white";
+        }
+        if((board[row+increment][col-increment] !== 0) && (board[row+increment][col-increment] !== null) && (currentColor !== pieceColor)){
+            legalMoves.push([row+increment, col-increment]);
+        }
+    }
+    /*
     if((piece === 1) || (piece === -1)){
         var increment = 0
 
@@ -51,5 +78,6 @@ export function getLegalMovesPawn(board, currentPosition, pieceColor){
             legalMoves.push([row+increment, col-increment]);
         }
     }
+    */   
     return legalMoves;
 }
